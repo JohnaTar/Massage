@@ -82,7 +82,7 @@ record.m_id,
 record.massager_id,
 record.cost_id,
 record.table_id
-FROM
+FROMs
 record
 WHERE record.date ="'.$date_start.'"
 AND record.table_id="'.$_POST['info2'][2].'"
