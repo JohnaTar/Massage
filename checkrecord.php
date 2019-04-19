@@ -58,6 +58,17 @@ else{
 
 if (isset($_POST['info2'])) {
 
+		$sql ="SELECT cost.cost_id,cost.cost_name,cost.hour
+			   FROM cost WHERE cost.cost_id = ".$_POST['info2'][3]."";
+		$res =mysqli_query($conn,$sql);
+
+		$row =mysqli_fetch_array($res,MYSQLI_ASSOC);
+
+		$time_start = $_POST['info2'][1];
+
+		$time_end =  date('H:i', strtotime($time_start.'+'.$row['hour'].' hour')); // syntax OK;
+
+
 	  	 $var = $_POST['info2'][0];
          $date = str_replace('/', '-', $var);
          $date_start = date('Y-m-d', strtotime($date));
@@ -74,12 +85,9 @@ record.table_id
 FROM
 record
 WHERE record.date ="'.$date_start.'"
-AND "'.$_POST['info'][1].'" BETWEEN record.time_start AND record.time_end
-OR  "'.$_POST['info'][3].'" BETWEEN record.time_start AND record.time_end
-OR record.time_start BETWEEN "'.$_POST['info'][1].'" AND "'.$_POST['info'][3].'"
-OR record.time_end BETWEEN "'.$_POST['info'][1].'" 
-	AND "'.$_POST['info'][3].'"
-AND record.table_id="'.$_POST['info2'][2].'"';
+AND record.table_id="'.$_POST['info2'][2].'"
+AND  ("'.$time_start.'" BETWEEN record.time_start AND record.time_end OR  "'.$time_end.'" BETWEEN record.time_start AND record.time_end)
+	AND (record.time_start BETWEEN "'.$time_start.'" AND "'.$time_end.'" OR record.time_end BETWEEN "'.$time_start.'" AND "'.$time_end.'" )';
 $result=mysqli_query($conn,$sql);
 if(mysqli_num_rows($result) == 0){
 	echo "true,<span style='color:green'>		</span>";
